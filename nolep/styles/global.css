@@ -1,0 +1,14 @@
+:root {
+    --black: #000000;
+    --white: #ffffff;
+    --gray: #736C6C;
+    --yellow: #FED025;
+}
+
+.bg-primary {
+    background-color: var(--yellow);
+}
+
+.text-primary {
+    color: var(--black);
+}
