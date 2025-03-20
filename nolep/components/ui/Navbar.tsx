@@ -1,7 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 const Navbar: React.FC = () => {
+    const pathname = usePathname(); // Ambil URL path aktif
+
     return (
         <nav className="relative flex items-center justify-between p-4 shadow-md bg-yellow-500">
             {/* Layer Background dengan efek Multiply */}
@@ -20,13 +25,25 @@ const Navbar: React.FC = () => {
 
                 {/* Menu */}
                 <div className="flex items-center gap-6">
-                    <Link href="/home" className="hover:underline text-black">
+                    <Link
+                        href="/home"
+                        className={`hover:underline text-black ${pathname === "/home" ? "underline font-bold" : ""
+                            }`}
+                    >
                         Beranda
                     </Link>
-                    <Link href="/camera" className="hover:underline text-black">
+                    <Link
+                        href="/camera"
+                        className={`hover:underline text-black ${pathname === "/camera" ? "underline font-bold" : ""
+                            }`}
+                    >
                         Camera
                     </Link>
-                    <Link href="/maps" className="hover:underline text-black">
+                    <Link
+                        href="/maps"
+                        className={`hover:underline text-black ${pathname === "/maps" ? "underline font-bold" : ""
+                            }`}
+                    >
                         Gmaps
                     </Link>
 
