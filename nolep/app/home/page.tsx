@@ -5,7 +5,7 @@ export default function Home() {
         <div>
             <Navbar />
             <main className="p-6">
-                <h1 className="text-2xl font-bold">Beranda</h1>
+                <h1 className="text-2xl font-bold">Home</h1>
                 <p>Selamat datang di beranda aplikasi Nolep!</p>
             </main>
         </div>
