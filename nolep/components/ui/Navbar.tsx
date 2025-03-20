@@ -5,7 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 const Navbar: React.FC = () => {
-    const pathname = usePathname(); // Ambil URL path aktif
+    const pathname = usePathname(); 
 
     return (
         <nav className="relative flex items-center justify-between p-4 shadow-md bg-yellow-500">
@@ -30,7 +30,7 @@ const Navbar: React.FC = () => {
                         className={`hover:underline text-black ${pathname === "/home" ? "underline font-bold" : ""
                             }`}
                     >
-                        Beranda
+                        Home
                     </Link>
                     <Link
                         href="/camera"
