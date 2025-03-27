@@ -48,7 +48,7 @@ export default function SignupForm() {
             <div className="flex flex-1 flex-col justify-between items-center bg-[#FAEED3] p-20 relative">
                 {/* Background Layer */}
                 <div
-                    className="absolute top-0 left-0 w-full h-full bg-cover bg-center"
+                    className="absolute top-0 left-0 w-full h-full mix-blend-multiply opacity-100 bg-center"
                     style={{ backgroundImage: 'url("/images/background.png")', zIndex: 0 }}
                 ></div>
 
