@@ -1,16 +1,16 @@
+"use client";
 import Navbar from "../../components/ui/Navbar";
+import dynamic from "next/dynamic";
 
-function Home() {
+export default function function Home() {
   return (
     <>
       <header>
         <Navbar />
       </header>
       <main>
-        <h1>Selamat datang di aplikasi Nolep</h1>
+          <h1 className="text-4xl font-bold text-center mt-20">Driver Drowsiness Monitor</h1>
+          <ChartSection />
       </main>
     </>
   );
-}
-
-export default Home;
