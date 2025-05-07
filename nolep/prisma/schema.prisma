@@ -4,39 +4,38 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+// schema.prisma
+
 generator client {
   provider = "prisma-client-js"
+  output   = "../generated/prisma"
 }
+
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-model User_Account {
-  id       Int      @id @default(autoincrement())
-  username String   @unique
-  password String
-  email    String   @unique
-  Person   Person?
-  Status   Status[]
-}
-
-model Person {
-  id             Int      @id @default(autoincrement())
-  user_id        Int      @unique
-  first_name     String
-  last_name      String
-  address        String?
-  contact_number String?
-  profile_image  String?
-  User_Account   User_Account @relation(fields: [user_id], references: [id])
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  firstName   String?
+  lastName    String?
+  profileImage String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  statuses  Status[]  // Relasi one-to-many ke Status
 }
 
 model Status {
-  id      Int      @id @default(autoincrement())
-  id_user Int
-  date    DateTime @default(now())
-  status  String
-  User_Account User_Account @relation(fields: [id_user], references: [id])
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  isSleepy    Boolean  // true = kantuk, false = tidak kantuk
+  timestamp   DateTime @default(now())
+  confidence  Float?   // Nilai confidence deteksi (0-1)
+  imagePath   String?  // Path screenshot (opsional)
+
+  @@index([userId])
 }

@@ -7,6 +7,17 @@ import Head from "next/head";
 import { useState, useEffect } from "react"; 
 
 export default function Camera() {
+
+  return (
+    <div>
+      <Navbar />
+      <main className="p-6">
+        <h1 className="text-2xl font-bold">Camera</h1>
+        <p>Halaman kamera untuk mendeteksi kantuk pengemudi.</p>
+      </main>
+    </div>
+  );
+
     const [scanning, setScanning] = useState(true); 
     const [result, setResult] = useState(""); 
     const [isDetecting, setIsDetecting] = useState(false); 
@@ -84,4 +95,5 @@ export default function Camera() {
             </div>
         </>
     );
+
 }
