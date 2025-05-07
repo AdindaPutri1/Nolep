@@ -9,6 +9,7 @@
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
+.pnp.js
 
 # testing
 /coverage
@@ -16,6 +17,7 @@
 # next.js
 /.next/
 /out/
+.next/cache/
 
 # production
 /build
@@ -23,6 +25,10 @@
 # misc
 .DS_Store
 *.pem
+
+# IDE
+.vscode/
+.idea/
 
 # debug
 npm-debug.log*
@@ -32,6 +38,8 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+.env*
+!.env.example
 
 # vercel
 .vercel
@@ -39,3 +47,26 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# Prisma generated files
+/generated/
+/prisma/*.db
+/src/generated/
+/prisma/migrations/
+/query_engine-*
+/schema.prisma
+
+# Testing
+/coverage
+
+# ESLint cache
+.eslintcache
+
+# Optional
+*.log
+*.tmp
+*.tmp.*
