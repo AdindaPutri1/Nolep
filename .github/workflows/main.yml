@@ -1,0 +1,61 @@
+name: CI/CD Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project: [frontend, backend]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Validasi apakah folder frontend/backend ada sebelum menjalankan perintah
+      - name: Check if Project Exists
+        id: check_path
+        run: |
+          if [ -d ${{ matrix.project }} ]; then
+            echo "exists=true" >> $GITHUB_ENV
+          else
+            echo "exists=false" >> $GITHUB_ENV
+          fi
+
+      - name: Skip if Project Does Not Exist
+        if: env.exists == 'false'
+        run: echo "Skipping ${{ matrix.project }} because folder does not exist"
+
+      # Setup Node.js jika folder ada
+      - name: Set up Node.js
+        if: env.exists == 'true'
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: ${{ matrix.project }}/package-lock.json
+
+      - name: Install Dependencies
+        if: env.exists == 'true' && hashFiles(format('{0}/package-lock.json', matrix.project)) != ''
+        run: |
+          cd ${{ matrix.project }}
+          npm install
+
+      - name: Run Tests
+        if: env.exists == 'true' && hashFiles(format('{0}/package-lock.json', matrix.project)) != ''
+        run: |
+          cd ${{ matrix.project }}
+          npm test
+
+      - name: Build Project
+        if: env.exists == 'true' && hashFiles(format('{0}/package-lock.json', matrix.project)) != ''
+        run: |
+          cd ${{ matrix.project }}
+          npm run build
