@@ -131,4 +131,15 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+
+  .leaflet-container {
+    z-index: 0;
+  }
+
+  .leaflet-control-geosearch {
+    position: relative !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+  }
 }

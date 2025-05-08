@@ -1,7 +1,6 @@
 "use client";
 import ChartSection from "@/components/ui/ChartSection";
 import Navbar from "../../components/ui/Navbar";
-import dynamic from "next/dynamic";
 
 export default function Home() {
   return (
