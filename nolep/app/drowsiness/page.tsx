@@ -40,6 +40,39 @@ export default function DrowsinessDetector() {
     };
   }, []);
 
+  // Navigate to maps when drowsy count reaches multiples of 5
+  useEffect(() => {
+    // Check if drowsy count is a multiple of 5 and not zero
+    if (drowsyCount > 0 && drowsyCount % 5 === 0) {
+      // Store the current location in localStorage before navigating
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            localStorage.setItem(
+              "userLocation",
+              JSON.stringify({ lat: latitude, lng: longitude })
+            );
+            localStorage.setItem("needsRestArea", "true");
+
+            // Navigate to maps page
+            router.push("/maps");
+          },
+          (err) => {
+            console.error("Error getting location before navigation:", err);
+            // Navigate anyway even if we can't get precise location
+            localStorage.setItem("needsRestArea", "true");
+            router.push("/maps");
+          }
+        );
+      } else {
+        // Navigate without location if geolocation isn't available
+        localStorage.setItem("needsRestArea", "true");
+        router.push("/maps");
+      }
+    }
+  }, [drowsyCount, router]);
+
   // Play alert sound when drowsy count reaches specific thresholds
   useEffect(() => {
     if (drowsyCount === 3 || drowsyCount === 6 || drowsyCount === 9) {
@@ -482,6 +515,15 @@ export default function DrowsinessDetector() {
                 Kantuk: {drowsyCount} kali
               </div>
             </div>
+
+            {drowsyCount > 0 && drowsyCount % 5 === 0 && (
+              <div className="absolute top-4 left-0 right-0 bg-yellow-100 p-4 rounded-lg text-center">
+                <p className="text-yellow-800 font-medium">
+                  Anda terdeteksi mengantuk {drowsyCount} kali. Mencari rest
+                  area terdekat...
+                </p>
+              </div>
+            )}
           </div>
         )}
       </div>
