@@ -53,7 +53,7 @@ const Navbar: React.FC = () => {
             <Link
               href="/maps"
               className={`hover:underline text-black ${
-                pathname === "/maps" ? "underline font-bold" : ""
+                pathname === "/components" ? "underline font-bold" : ""
               }`}
             >
               Gmaps
