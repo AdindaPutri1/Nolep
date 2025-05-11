@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Search, MapPin, Compass, Coffee, ArrowLeft } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
+import type { Map, Marker, LatLngBoundsExpression } from "leaflet";
 
 // Definisi tipe-tipe untuk pencarian dan peta
 interface SearchResult {
@@ -47,23 +48,19 @@ const MapContent = () => {
 
   // State untuk menyimpan referensi Leaflet
   const [leafletLoaded, setLeafletLoaded] = useState(false);
-  const leafletMap = useRef<any>(null);
-  const markerRef = useRef<any>(null);
-  const restAreaMarkersRef = useRef<any[]>([]);
-  const L = useRef<any>(null);
+  const leafletMap = useRef<Map | null>(null);
+  const markerRef = useRef<Marker | null>(null);
+  const restAreaMarkersRef = useRef<Marker[]>([]);
+  const L = useRef<typeof import("leaflet") | null>(null);
 
-  // Fungsi debounce dengan tipe yang tepat
-  function debounce<F extends (...args: any[]) => any>(func: F, wait: number) {
+  function debounce(
+    func: (query: string) => void,
+    wait: number
+  ): (query: string) => void {
     let timeout: NodeJS.Timeout | null = null;
-
-    return function (this: any, ...args: Parameters<F>) {
-      const context = this;
-      const later = () => {
-        timeout = null;
-        func.apply(context, args);
-      };
+    return (query: string) => {
       if (timeout) clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
+      timeout = setTimeout(() => func(query), wait);
     };
   }
 
@@ -119,11 +116,8 @@ const MapContent = () => {
     }
   }, []);
 
-  // Fix Leaflet icon issue
   const fixLeafletIcon = () => {
     if (!L.current) return;
-
-    delete L.current.Icon.Default.prototype._getIconUrl;
 
     L.current.Icon.Default.mergeOptions({
       iconRetinaUrl:
@@ -191,7 +185,7 @@ const MapContent = () => {
     lon1: number,
     lat2: number,
     lon2: number
-  ) => {
+  ): number => {
     const R = 6371; // Radius of the earth in km
     const dLat = ((lat2 - lat1) * Math.PI) / 180;
     const dLon = ((lon2 - lon1) * Math.PI) / 180;
@@ -220,7 +214,7 @@ const MapContent = () => {
         "rumah+makan",
         "cafe",
       ];
-      let allResults: any[] = [];
+      let allResults: SearchResult[] = [];
 
       // Use overpass API to get actual POIs or use Nominatim
       // For this implementation, we'll use Nominatim with different queries
@@ -238,18 +232,20 @@ const MapContent = () => {
       }
 
       // Process and deduplicate results
-      const processedResults: RestArea[] = allResults.map((result) => ({
-        name: result.display_name.split(",")[0],
-        lat: parseFloat(result.lat),
-        lng: parseFloat(result.lon),
-        distance: calculateDistance(
-          lat,
-          lng,
-          parseFloat(result.lat),
-          parseFloat(result.lon)
-        ),
-        amenities: [],
-      }));
+      const processedResults: RestArea[] = allResults.map(
+        (result: SearchResult) => ({
+          name: result.display_name.split(",")[0],
+          lat: parseFloat(result.lat),
+          lng: parseFloat(result.lon),
+          distance: calculateDistance(
+            lat,
+            lng,
+            parseFloat(result.lat),
+            parseFloat(result.lon)
+          ),
+          amenities: [],
+        })
+      );
 
       // Remove duplicates based on name or close proximity
       const uniqueResults = processedResults.filter(
@@ -288,9 +284,9 @@ const MapContent = () => {
 
         // Add markers for each rest area
         closestRestAreas.forEach((restArea) => {
-          const marker = L.current
-            .marker([restArea.lat, restArea.lng], { icon: coffeeIcon })
-            .addTo(leafletMap.current);
+          const marker = L.current!.marker([restArea.lat, restArea.lng], {
+            icon: coffeeIcon,
+          }).addTo(leafletMap.current!);
 
           marker.bindPopup(`
             <strong>${restArea.name}</strong><br>
@@ -304,13 +300,17 @@ const MapContent = () => {
           restAreaMarkersRef.current.push(marker);
         });
 
-        // Fit map to include all markers if there are any
-        if (closestRestAreas.length > 0) {
+        // Add a null check before accessing userLocation
+        if (userLocation && closestRestAreas.length > 0) {
           const bounds = L.current.latLngBounds([
-            [userLocation.lat, userLocation.lng],
-            ...closestRestAreas.map((ra) => [ra.lat, ra.lng]),
+            [userLocation.lat, userLocation.lng] as [number, number],
+            ...closestRestAreas.map(
+              (ra) => [ra.lat, ra.lng] as [number, number]
+            ),
           ]);
-          leafletMap.current.fitBounds(bounds, { padding: [50, 50] });
+          leafletMap.current.fitBounds(bounds as LatLngBoundsExpression, {
+            padding: [50, 50],
+          });
         }
       }
     } catch (err) {

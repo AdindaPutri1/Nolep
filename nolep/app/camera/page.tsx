@@ -21,7 +21,7 @@ export default function Camera() {
 
   const [scanning, setScanning] = useState(true);
   const [result, setResult] = useState("");
-  const [isDetecting, setIsDetecting] = useState(false);
+  const [, setIsDetecting] = useState(false);
 
   // Fungsi untuk ngolah hasil dari AI
   function handleAIResult(data: string) {
