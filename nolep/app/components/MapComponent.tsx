@@ -7,8 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Search, MapPin, Compass, Coffee, ArrowLeft } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import type { Map, Marker, LatLngExpression } from "leaflet";
-import "leaflet/dist/leaflet.css";
+
+import type { Map, Marker, LatLngBoundsExpression } from "leaflet";
 
 // Definisi tipe-tipe untuk pencarian dan peta
 interface SearchResult {
@@ -54,44 +54,21 @@ const MapContent = () => {
 
   // State untuk menyimpan referensi Leaflet
   const [leafletLoaded, setLeafletLoaded] = useState(false);
-  const leafletMap = useRef<LeafletMapType | null>(null);
-  const markerRef = useRef<LeafletMarkerType | null>(null);
-  const restAreaMarkersRef = useRef<LeafletMarkerType[]>([]);
-  const L = useRef<LeafletType | null>(null);
 
-  // Calculate distance between two coordinates using Haversine formula
-  const calculateDistance = (
-    lat1: number,
-    lon1: number,
-    lat2: number,
-    lon2: number
-  ) => {
-    const R = 6371; // Radius of the earth in km
-    const dLat = ((lat2 - lat1) * Math.PI) / 180;
-    const dLon = ((lon2 - lon1) * Math.PI) / 180;
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos((lat1 * Math.PI) / 180) *
-        Math.cos((lat2 * Math.PI) / 180) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = R * c; // Distance in km
-    return distance;
-  };
+  const leafletMap = useRef<Map | null>(null);
+  const markerRef = useRef<Marker | null>(null);
+  const restAreaMarkersRef = useRef<Marker[]>([]);
+  const L = useRef<typeof import("leaflet") | null>(null);
 
-  // Fungsi debounce dengan tipe yang tepat
-  function debounce<T extends unknown[]>(
-    func: (...args: T) => void,
+  function debounce(
+    func: (query: string) => void,
     wait: number
-  ): (...args: T) => void {
-    let timeout: ReturnType<typeof setTimeout> | null = null;
-    return (...args: T) => {
+  ): (query: string) => void {
+    let timeout: NodeJS.Timeout | null = null;
+    return (query: string) => {
       if (timeout) clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        timeout = null;
-        func(...args);
-      }, wait);
+      timeout = setTimeout(() => func(query), wait);
+ 
     };
   }
 
@@ -271,14 +248,8 @@ const MapContent = () => {
     }
   }, []);
 
-  // Fix Leaflet icon issue
   const fixLeafletIcon = () => {
     if (!L.current) return;
-
-    // Fix the _getIconUrl property issue by using type assertion
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const IconDefault = L.current.Icon.Default as any;
-    delete IconDefault.prototype._getIconUrl;
 
     L.current.Icon.Default.mergeOptions({
       iconRetinaUrl:
@@ -338,7 +309,151 @@ const MapContent = () => {
         leafletMap.current = null;
       }
     };
-  }, [leafletLoaded, userLocation, needsRestArea, searchRestAreas]);
+
+  }, [leafletLoaded, userLocation, needsRestArea]);
+
+ distance between two coordinates using Haversine formula
+  const calculateDistance = (
+    lat1: number,
+    lon1: number,
+    lat2: number,
+    lon2: number
+  ): number => {
+    const R = 6371; // Radius of the earth in km
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLon = ((lon2 - lon1) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c; // Distance in km
+    return distance;
+  };
+
+  // Search for rest areas near a location
+  const searchRestAreas = async (lat: number, lng: number) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      // Search for "rest area", "gas station", "spbu", etc. near the location
+      const searchTerms = [
+        "rest+area",
+        "gas+station",
+        "spbu",
+        "rumah+makan",
+        "cafe",
+      ];
+      let allResults: SearchResult[] = [];
+
+      // Use overpass API to get actual POIs or use Nominatim
+      // For this implementation, we'll use Nominatim with different queries
+      for (const term of searchTerms) {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${term}&lat=${lat}&lon=${lng}&bounded=1&addressdetails=1&limit=5`
+        );
+
+        if (!response.ok) {
+          throw new Error(`Failed to search for ${term}`);
+        }
+
+        const data = await response.json();
+        allResults = [...allResults, ...data];
+      }
+
+      // Process and deduplicate results
+      const processedResults: RestArea[] = allResults.map(
+        (result: SearchResult) => ({
+          name: result.display_name.split(",")[0],
+          lat: parseFloat(result.lat),
+          lng: parseFloat(result.lon),
+          distance: calculateDistance(
+            lat,
+            lng,
+            parseFloat(result.lat),
+            parseFloat(result.lon)
+          ),
+          amenities: [],
+        })
+      );
+
+      // Remove duplicates based on name or close proximity
+      const uniqueResults = processedResults.filter(
+        (result, index, self) =>
+          index ===
+          self.findIndex(
+            (r) =>
+              r.name === result.name ||
+              calculateDistance(r.lat, r.lng, result.lat, result.lng) < 0.1
+          )
+      );
+
+      // Sort by distance
+      const sortedResults = uniqueResults.sort(
+        (a, b) => a.distance - b.distance
+      );
+
+      // Take the closest 5
+      const closestRestAreas = sortedResults.slice(0, 5);
+
+      setRestAreas(closestRestAreas);
+
+      // Add rest area markers to the map
+      if (leafletMap.current && L.current) {
+        // Clear existing rest area markers
+        restAreaMarkersRef.current.forEach((marker) => marker.remove());
+        restAreaMarkersRef.current = [];
+
+        // Create a coffee icon
+        const coffeeIcon = L.current.divIcon({
+          html: `<div style="background-color: #3b82f6; width: 25px; height: 25px; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-size: 14px;">☕</div>`,
+          className: "custom-div-icon",
+          iconSize: [25, 25],
+          iconAnchor: [12, 12],
+        });
+
+        // Add markers for each rest area
+        closestRestAreas.forEach((restArea) => {
+          const marker = L.current!.marker([restArea.lat, restArea.lng], {
+            icon: coffeeIcon,
+          }).addTo(leafletMap.current!);
+
+          marker.bindPopup(`
+            <strong>${restArea.name}</strong><br>
+            Jarak: ${restArea.distance.toFixed(1)} km
+          `);
+
+          marker.on("click", () => {
+            setSelectedRestArea(restArea);
+          });
+
+          restAreaMarkersRef.current.push(marker);
+        });
+
+        // Add a null check before accessing userLocation
+        if (userLocation && closestRestAreas.length > 0) {
+          const bounds = L.current.latLngBounds([
+            [userLocation.lat, userLocation.lng] as [number, number],
+            ...closestRestAreas.map(
+              (ra) => [ra.lat, ra.lng] as [number, number]
+            ),
+          ]);
+          leafletMap.current.fitBounds(bounds as LatLngBoundsExpression, {
+            padding: [50, 50],
+          });
+        }
+      }
+    } catch (err) {
+      console.error("Error searching for rest areas:", err);
+      setError("Failed to find rest areas. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
 
   // Location search using OpenStreetMap Nominatim API
   const searchLocation = async (query: string) => {
