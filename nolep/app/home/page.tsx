@@ -1,6 +1,12 @@
+// home/page.tsx
 "use client";
-import ChartSection from "@/components/ui/ChartSection";
+import dynamic from "next/dynamic";
 import Navbar from "../../components/ui/Navbar";
+
+// Import ChartSection secara dinamis tanpa SSR
+const ChartSection = dynamic(() => import("@/components/ui/ChartSection"), {
+  ssr: false,
+});
 
 export default function Home() {
   return (
