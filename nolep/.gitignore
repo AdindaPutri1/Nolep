@@ -70,3 +70,5 @@ Thumbs.db
 *.log
 *.tmp
 *.tmp.*
+# clerk configuration (can include secrets)
+/.clerk/
