@@ -43,6 +43,36 @@ Hal ini menunjukkan perlunya sistem deteksi kantuk yang dapat memberikan peringa
 | **AI Model**     | Deteksi kantuk berbasis analisis wajah        |
 | **GitHub Pages** | Hosting dokumentasi proyek secara statis      |
 
+## 🚀 Deployment
+
+Aplikasi dapat diakses di:  
+🌐 [https://nolep-two.vercel.app](https://nolep-two.vercel.app)
+
+## 🛠️ Installation
+
+### Prerequisites
+- Node.js (v18 or later)
+- npm (v9 or later)
+- PostgreSQL (or your preferred database)
+
+### Setup Steps
+
+1. Clone the repository
+   ```bash
+   git clone https://github.com/yourusername/nolep.git
+   cd nolep/nolep
+2. Install dependencies
+   ```bash
+   npm install
+3. Database set-up
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   npm install @prisma/client
+4. Run development server
+   ```bash
+   npm run dev
+
 
 ## 🏫 Institusi
 
