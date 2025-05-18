@@ -48,11 +48,11 @@ export async function POST(req: Request) {
     });
   }
 
-  // ADD THIS CODE
+  // Handle user.created event
   if (evt.type === "user.created") {
     const { id, email_addresses, first_name, last_name, image_url } = evt.data;
     try {
-      const newEvent = await prisma.user.create({
+      const newUser = await prisma.user.create({
         data: {
           id: id,
           email: email_addresses[0].email_address,
@@ -61,12 +61,54 @@ export async function POST(req: Request) {
           profileImage: image_url,
         },
       });
-      return new Response(JSON.stringify(newEvent), {
+      return new Response(JSON.stringify(newUser), {
         status: 201,
       });
     } catch (err) {
       console.error("Error: Failed to store event in the database:", err);
       return new Response("Error: Failed to store event in the database", {
+        status: 500,
+      });
+    }
+  }
+
+  // Handle user.updated event
+  if (evt.type === "user.updated") {
+    const { id, email_addresses, first_name, last_name, image_url } = evt.data;
+    try {
+      const updatedUser = await prisma.user.update({
+        where: { id },
+        data: {
+          email: email_addresses[0]?.email_address || undefined,
+          firstName: first_name || undefined,
+          lastName: last_name || undefined,
+          profileImage: image_url || undefined,
+        },
+      });
+      return new Response(JSON.stringify(updatedUser), {
+        status: 200,
+      });
+    } catch (err) {
+      console.error("Error: Failed to update user in the database:", err);
+      return new Response("Error: Failed to update user in the database", {
+        status: 500,
+      });
+    }
+  }
+
+  // Handle user.deleted event
+  if (evt.type === "user.deleted") {
+    const { id } = evt.data;
+    try {
+      await prisma.user.delete({
+        where: { id },
+      });
+      return new Response("User deleted successfully", {
+        status: 200,
+      });
+    } catch (err) {
+      console.error("Error: Failed to delete user from the database:", err);
+      return new Response("Error: Failed to delete user from the database", {
         status: 500,
       });
     }
