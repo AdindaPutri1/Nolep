@@ -14,7 +14,7 @@ import { useUser } from "@clerk/nextjs";
 export default function ChartSection() {
   const [barData, setBarData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null); // Updated type here
   const { user } = useUser();
 
   useEffect(() => {
@@ -33,7 +33,11 @@ export default function ChartSection() {
         setBarData(data);
       } catch (err) {
         console.error("Error fetching weekly data:", err);
-        setError(err.message);
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("An unknown error occurred");
+        }
       } finally {
         setLoading(false);
       }
