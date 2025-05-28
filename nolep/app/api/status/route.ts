@@ -4,14 +4,12 @@ import prisma from "@/lib/db";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { userId, isSleepy, confidence, imagePath } = body;
+    const { userId, isSleepy } = body; // Hanya menerima userId dan isSleepy
 
     const status = await prisma.status.create({
       data: {
         userId,
         isSleepy,
-        confidence,
-        imagePath,
       },
     });
 
