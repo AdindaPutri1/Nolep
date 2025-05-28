@@ -29,13 +29,11 @@ model User {
 }
 
 model Status {
-  id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
-  isSleepy    Boolean  // true = kantuk, false = tidak kantuk
-  timestamp   DateTime @default(now())
-  confidence  Float?   // Nilai confidence deteksi (0-1)
-  imagePath   String?  // Path screenshot (opsional)
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  isSleepy  Boolean  // true = kantuk, false = tidak kantuk
+  timestamp DateTime @default(now())
 
   @@index([userId])
 }

@@ -3,6 +3,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
 
 export default function DrowsinessDetector() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -15,6 +16,7 @@ export default function DrowsinessDetector() {
   const cameraRef = useRef<any>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const router = useRouter();
+  const { user } = useUser();
 
   // Refs for drowsiness detection logic
   const eyesClosedStartTime = useRef<number | null>(null);
@@ -25,11 +27,38 @@ export default function DrowsinessDetector() {
   const drowsyReason = useRef<string>("");
   const previouslyDrowsy = useRef<boolean>(false);
 
+  // Function to save drowsiness status to database
+  const saveDrowsinessStatus = async (isSleepy: boolean) => {
+    if (!user?.id) return;
+
+    try {
+      const response = await fetch("/api/status", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          isSleepy,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save drowsiness status");
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error saving drowsiness status:", error);
+    }
+  };
+
   // Load scripts manually to ensure they're properly loaded
   // Create audio element for alerts
   useEffect(() => {
     // Create audio element for drowsiness alerts
-    audioRef.current = new Audio("assets/bangun.mp3");
+    audioRef.current = new Audio("/assets/bangun.mp3");
     audioRef.current.preload = "auto";
 
     return () => {
@@ -42,9 +71,7 @@ export default function DrowsinessDetector() {
 
   // Navigate to maps when drowsy count reaches multiples of 5
   useEffect(() => {
-    // Check if drowsy count is a multiple of 5 and not zero
     if (drowsyCount > 0 && drowsyCount % 5 === 0) {
-      // Store the current location in localStorage before navigating
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
@@ -54,19 +81,15 @@ export default function DrowsinessDetector() {
               JSON.stringify({ lat: latitude, lng: longitude })
             );
             localStorage.setItem("needsRestArea", "true");
-
-            // Navigate to maps page
             router.push("/maps");
           },
           (err) => {
             console.error("Error getting location before navigation:", err);
-            // Navigate anyway even if we can't get precise location
             localStorage.setItem("needsRestArea", "true");
             router.push("/maps");
           }
         );
       } else {
-        // Navigate without location if geolocation isn't available
         localStorage.setItem("needsRestArea", "true");
         router.push("/maps");
       }
@@ -77,11 +100,8 @@ export default function DrowsinessDetector() {
   useEffect(() => {
     if (drowsyCount === 3 || drowsyCount === 6 || drowsyCount === 9) {
       if (audioRef.current) {
-        // Reset audio and play
         audioRef.current.pause();
         audioRef.current.currentTime = 0;
-
-        // Try to play the audio with error handling
         audioRef.current.play().catch((err) => {
           console.error("Error playing audio alert:", err);
         });
@@ -98,7 +118,6 @@ export default function DrowsinessDetector() {
         // Function to load a script
         const loadScript = (src: string): Promise<void> => {
           return new Promise((resolve, reject) => {
-            // Check if script is already loaded
             if (document.querySelector(`script[src="${src}"]`)) {
               resolve();
               return;
@@ -141,7 +160,6 @@ export default function DrowsinessDetector() {
 
     // Cleanup function
     return () => {
-      // Stop the camera when component unmounts
       if (cameraRef.current) {
         try {
           cameraRef.current.stop();
@@ -154,7 +172,6 @@ export default function DrowsinessDetector() {
 
   const initCamera = async () => {
     try {
-      // Check if MediaPipe libraries are available
       if (
         !(window as any).FaceMesh ||
         !(window as any).drawConnectors ||
@@ -163,7 +180,6 @@ export default function DrowsinessDetector() {
         throw new Error("MediaPipe libraries not loaded properly");
       }
 
-      // Request camera permission
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
           width: { ideal: 640 },
@@ -185,7 +201,6 @@ export default function DrowsinessDetector() {
           }
         };
 
-        // Initialize FaceMesh after camera is ready
         initFaceMesh();
       }
     } catch (err) {
@@ -206,7 +221,6 @@ export default function DrowsinessDetector() {
       const FACEMESH_TESSELATION = (window as any).FACEMESH_TESSELATION;
       const Camera = (window as any).Camera;
 
-      // Initialize FaceMesh
       faceMeshRef.current = new FaceMesh({
         locateFile: (file: string) => {
           return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4/${file}`;
@@ -260,11 +274,9 @@ export default function DrowsinessDetector() {
             return (A + B) / (2.0 * C);
           };
 
-          // Define distance function for reuse
           const dist = (a: any, b: any) => Math.hypot(a.x - b.x, a.y - b.y);
 
           // Eye landmark indices for MediaPipe face mesh
-          // Mata kiri: 33, 160, 158, 133, 153, 144
           const leftEyePoints = [
             landmarks[33],
             landmarks[160],
@@ -274,7 +286,6 @@ export default function DrowsinessDetector() {
             landmarks[144],
           ];
 
-          // Mata kanan: 263, 387, 386, 362, 380, 373
           const rightEyePoints = [
             landmarks[263],
             landmarks[387],
@@ -285,22 +296,16 @@ export default function DrowsinessDetector() {
           ];
 
           // Mouth landmarks for yawn detection
-          // Upper lip: 13
-          // Lower lip: 14
           const upperLip = landmarks[13];
           const lowerLip = landmarks[14];
-
-          // Top of mouth: 82
-          // Bottom of mouth: 18
           const mouthTop = landmarks[82];
           const mouthBottom = landmarks[18];
 
           // Calculate mouth aspect ratio (MAR) for yawn detection
           const mouthHeight = dist(upperLip, lowerLip);
-          const mouthWidth = dist(landmarks[78], landmarks[308]); // Mouth corners
+          const mouthWidth = dist(landmarks[78], landmarks[308]);
           const innerMouthHeight = dist(mouthTop, mouthBottom);
 
-          // Create a combined measure for yawn detection
           const MAR = mouthHeight / mouthWidth;
           const innerMAR = innerMouthHeight / mouthWidth;
 
@@ -311,13 +316,13 @@ export default function DrowsinessDetector() {
 
           // Define thresholds
           const EAR_THRESHOLD = 0.22;
-          const MAR_THRESHOLD = 0.6; // Threshold for mouth aspect ratio (yawning)
-          const INNER_MAR_THRESHOLD = 0.25; // For inner mouth opening
+          const MAR_THRESHOLD = 0.6;
+          const INNER_MAR_THRESHOLD = 0.25;
 
           // Eyes closed detection
           const eyesClosed = averageEAR < EAR_THRESHOLD;
 
-          // Yawn detection - combining outer and inner mouth measurements
+          // Yawn detection
           const isYawningNow =
             MAR > MAR_THRESHOLD && innerMAR > INNER_MAR_THRESHOLD;
 
@@ -326,18 +331,15 @@ export default function DrowsinessDetector() {
 
           if (eyesClosed) {
             if (!isEyesClosed.current) {
-              // Eyes just closed - start timer
               eyesClosedStartTime.current = currentTime;
               isEyesClosed.current = true;
             }
 
-            // Calculate how long eyes have been closed
             if (eyesClosedStartTime.current) {
               eyeClosedDuration.current =
-                (currentTime - eyesClosedStartTime.current) / 1000; // Convert to seconds
+                (currentTime - eyesClosedStartTime.current) / 1000;
             }
           } else {
-            // Eyes are open - reset trackers
             isEyesClosed.current = false;
             eyesClosedStartTime.current = null;
             eyeClosedDuration.current = 0;
@@ -350,7 +352,6 @@ export default function DrowsinessDetector() {
           }
 
           // Debug visuals - draw landmarks
-          // Eyes
           canvasCtx.fillStyle = eyesClosed ? "#FF0000" : "#00FF00";
           leftEyePoints.forEach((point) => {
             canvasCtx.beginPath();
@@ -393,35 +394,26 @@ export default function DrowsinessDetector() {
           // Combined drowsiness detection
           let isDrowsyNow = false;
 
-          // Check if eyes have been closed for more than 1.2 seconds
           if (eyeClosedDuration.current > 1) {
             isDrowsyNow = true;
             drowsyReason.current = "Mata tertutup > 1 detik";
-          }
-          // Check if yawning has been detected
-          else if (yawnDetected.current && isYawning.current) {
+          } else if (yawnDetected.current && isYawning.current) {
             isDrowsyNow = true;
             drowsyReason.current = "Menguap terdeteksi";
-          }
-          // Reset if no drowsiness indicators
-          else {
+          } else {
             drowsyReason.current = "";
-            // Only reset yawn detection when mouth is fully closed
             if (MAR < 0.4 && innerMAR < 0.1) {
               yawnDetected.current = false;
             }
           }
 
-          // Count drowsy events - increment counter when transitioning from alert to drowsy
-          if (isDrowsyNow && !previouslyDrowsy.current) {
+          // Save to database when drowsiness is detected
+          if (isDrowsyNow && !previouslyDrowsy.current && user?.id) {
             setDrowsyCount((prevCount) => prevCount + 1);
-            console.log("Drowsy event detected! Count:", drowsyCount + 1);
+            saveDrowsinessStatus(true);
           }
 
-          // Update previous state for next frame comparison
           previouslyDrowsy.current = isDrowsyNow;
-
-          // Update UI state
           setIsDrowsy(isDrowsyNow);
 
           // Draw debug text
