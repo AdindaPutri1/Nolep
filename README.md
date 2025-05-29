@@ -1,4 +1,4 @@
-# 🚘 Drowsy Detection App — *Nolep*
+# 🚘 Drowsiness Detection WebApp — *Nolep*
 Sistem deteksi kantuk berbasis AI untuk membantu pengemudi tetap waspada dan aman di jalan.
 
 ## 📌 Latar Belakang
@@ -52,7 +52,7 @@ Aplikasi dapat diakses di:
 
 ## 🎥 Video Demo
 Video demo yang dapat dilihat pada youtube:  
-🌐 [Video Demo](https://nolep-two.vercel.app)
+🌐 [Video Demo](https://youtu.be/isCOEafarSE?si=4Qd68nsApUhFrmNC)
 
 ## 🔐 Kredensial Login Demo
 
