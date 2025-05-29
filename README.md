@@ -50,6 +50,26 @@ Aplikasi dapat diakses di:
 🌐 [https://nolep-two.vercel.app](https://nolep-two.vercel.app)
 
 
+## 🎥 Video Demo
+Video demo yang dapat dilihat pada youtube:
+🌐 [Video Demo](https://nolep-two.vercel.app)
+
+## 🔐 Kredensial Login Demo
+
+Untuk mengakses demo dengan fitur autentikasi, silakan gunakan akun berikut:
+
+| **Email**           | **Password**   |
+|---------------------|----------------|
+| noleptest@gmail.com | senprotest     |
+
+
+
+## 📊 Link Presentasi
+
+Akses presentasi proyek kami melalui Canva:  
+[https://www.canva.com/design/YourDesignID](https://www.canva.com/design/YourDesignID)  
+
+
 ## 🛠️ Installation
 
 ### Prerequisites
@@ -92,34 +112,13 @@ Aplikasi dapat diakses di:
 └── README.md
 
 
-## 🎥 Video Demo
-
-Tonton video demo lengkap web app di YouTube berikut:  
-[![Demo Nolep](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://youtu.be/VIDEO_ID)  
-
-
-## 🔐 Kredensial Login Demo
-
-Untuk mengakses demo dengan fitur autentikasi, silakan gunakan akun berikut:
-
-| **Email**           | **Password**   |
-|---------------------|----------------|
-| noleptest@gmail.com | senprotest     |
-
-
-
-## 📊 Link Presentasi
-
-Akses presentasi proyek kami melalui Canva:  
-[https://www.canva.com/design/YourDesignID](https://www.canva.com/design/YourDesignID)  
-
 
 
 ## 🏫 Institusi
 
-> **Departemen Teknik Elektro dan Teknologi Informasi**
-> Fakultas Teknik, Universitas Gadjah Mada  
-> **Senior Project TI — 2025**
+Departemen Teknik Elektro dan Teknologi Informasi
+Fakultas Teknik, Universitas Gadjah Mada  
+Senior Project TI — 2025
 
 
 
