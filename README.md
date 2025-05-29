@@ -51,7 +51,7 @@ Aplikasi dapat diakses di:
 
 
 ## 🎥 Video Demo
-Video demo yang dapat dilihat pada youtube:
+Video demo yang dapat dilihat pada youtube:  
 🌐 [Video Demo](https://nolep-two.vercel.app)
 
 ## 🔐 Kredensial Login Demo
@@ -67,7 +67,7 @@ Untuk mengakses demo dengan fitur autentikasi, silakan gunakan akun berikut:
 ## 📊 Link Presentasi
 
 Akses presentasi proyek kami melalui Canva:  
-[https://www.canva.com/design/YourDesignID](https://www.canva.com/design/YourDesignID)  
+🌐 [PPT Canva](https://www.canva.com/design/DAGnhuTFqJY/iytbVh2bVFTKggLgBnNZZg/edit)  
 
 
 ## 🛠️ Installation
@@ -99,18 +99,29 @@ Akses presentasi proyek kami melalui Canva:
 
 
 ## 📁 Struktur Proyek
-```bash
-/nolep
-├── /prisma             # Skema dan migrasi database Prisma
-├── /src
-│   ├── /api            # API backend Express.js dan Next.js
-│   ├── /components     # Komponen UI React
-│   ├── /pages          # Halaman Next.js
-│   └── /models         # AI model dan logika deteksi
-├── /public             # Asset statis
-├── .env                # Konfigurasi environment variables
-└── README.md
-
+- `.github/` — Workflow GitHub Actions  
+- `ai-models/` — Model AI untuk deteksi kantuk  
+- `docs/` — Dokumentasi proyek  
+- `nolep/` — Source code utama aplikasi  
+  - `app/` — Folder aplikasi frontend Next.js  
+    - `api/` — API routes (backend)  
+    - `camera/` — Modul kamera  
+    - `components/` — Komponen UI reusable  
+    - `drowsiness/` — Modul deteksi kantuk  
+    - `home/` — Halaman utama  
+    - `maps/` — Fitur peta  
+    - `globals.css` — Styling global  
+    - `layout.tsx` — Layout utama aplikasi  
+    - `page.tsx` — Entry point halaman  
+  - `prisma/` — Prisma ORM & schema database  
+  - `public/` — File statis seperti gambar dan favicon  
+  - `styles/` — Styling tambahan  
+  - `middleware.ts` — Middleware Next.js  
+  - `next.config.ts` — Konfigurasi Next.js  
+  - `package.json` — Dependencies dan scripts  
+  - `tsconfig.json` — Konfigurasi TypeScript  
+- `scripts/` — Skrip tambahan (build, deploy, dsb)  
+- `.env` — Environment variables (tidak diupload ke Git)
 
 
 
