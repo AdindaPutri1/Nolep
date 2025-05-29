@@ -1,5 +1,5 @@
 # 🚘 Drowsy Detection App — *Nolep*
-
+Sistem deteksi kantuk berbasis AI untuk membantu pengemudi tetap waspada dan aman di jalan.
 
 ## 📌 Latar Belakang
 
@@ -26,8 +26,7 @@ Hal ini menunjukkan perlunya sistem deteksi kantuk yang dapat memberikan peringa
 
 - 🔐 **Autentikasi Aman** — menggunakan Clerk dengan integrasi Next.js
 - 📊 **Dashboard Visualisasi**:
-  - Pie chart: distribusi notifikasi peringatan
-  - Bar chart: riwayat peringatan kantuk mingguan
+  - Bar chart: riwayat peringatan kantuk harian
 - 🗺️ **Halaman Peta** — menampilkan lokasi tempat istirahat terdekat
 - 🧠 **Prediksi AI** — mendeteksi kantuk melalui analisis wajah pengguna
 - 🌍 **Deploy via GitHub Pages** — untuk keperluan dokumentasi dan demo
@@ -44,10 +43,12 @@ Hal ini menunjukkan perlunya sistem deteksi kantuk yang dapat memberikan peringa
 | **GitHub Pages** | Hosting dokumentasi proyek secara statis      |
 
 
+
 ## 🚀 Deployment
 
 Aplikasi dapat diakses di:  
 🌐 [https://nolep-two.vercel.app](https://nolep-two.vercel.app)
+
 
 ## 🛠️ Installation
 
@@ -61,24 +62,62 @@ Aplikasi dapat diakses di:
 1. Clone the repository
    ```bash
    git clone https://github.com/yourusername/nolep.git
+2. Masuk ke path nolep
+   ```bash
    cd nolep/nolep
-2. Install dependencies
+3. Install dependencies
    ```bash
    npm install
-3. Database set-up
+4. Database set-up
    ```bash
    npx prisma generate
    npx prisma db push
    npm install @prisma/client
-4. Run development server
+5. Run development server
    ```bash
    npm run dev
+
+
+## 📁 Struktur Proyek
+```bash
+/nolep
+├── /prisma             # Skema dan migrasi database Prisma
+├── /src
+│   ├── /api            # API backend Express.js dan Next.js
+│   ├── /components     # Komponen UI React
+│   ├── /pages          # Halaman Next.js
+│   └── /models         # AI model dan logika deteksi
+├── /public             # Asset statis
+├── .env                # Konfigurasi environment variables
+└── README.md
+
+
+## 🎥 Video Demo
+
+Tonton video demo lengkap web app di YouTube berikut:  
+[![Demo Nolep](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://youtu.be/VIDEO_ID)  
+
+
+## 🔐 Kredensial Login Demo
+
+Untuk mengakses demo dengan fitur autentikasi, silakan gunakan akun berikut:
+
+| **Email**           | **Password**   |
+|---------------------|----------------|
+| noleptest@gmail.com | senprotest     |
+
+
+
+## 📊 Link Presentasi
+
+Akses presentasi proyek kami melalui Canva:  
+[https://www.canva.com/design/YourDesignID](https://www.canva.com/design/YourDesignID)  
 
 
 
 ## 🏫 Institusi
 
-> **Departemen Teknik Elektro dan Teknologi Informasi**  
+> **Departemen Teknik Elektro dan Teknologi Informasi**
 > Fakultas Teknik, Universitas Gadjah Mada  
 > **Senior Project TI — 2025**
 
