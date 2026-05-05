@@ -1,74 +1,53 @@
-# 🚘 Drowsiness Detection WebApp — *Nolep*
-Sistem deteksi kantuk berbasis AI untuk membantu pengemudi tetap waspada dan aman di jalan.
+# Drowsiness Detection Web Application — Nolep
 
-## 📌 Latar Belakang
+## Overview
+Nolep is a web-based drowsiness detection system powered by artificial intelligence. The application is designed to help drivers maintain alertness by detecting early signs of fatigue and issuing real-time warnings to reduce the risk of traffic accidents.
 
-Peningkatan jumlah kendaraan bermotor di Indonesia berdampak langsung pada naiknya angka kecelakaan lalu lintas. Berdasarkan data Korlantas Polri dari Januari hingga Agustus 2024, tercatat **79.220 kasus kecelakaan**, dengan puncaknya pada bulan April sebanyak **11.924 kejadian**. Total kendaraan yang terlibat mencapai **722.470 unit**, dan sebanyak **71,8% di antaranya disebabkan oleh kelelahan dan kantuk**.
+## Background
+The increasing number of motor vehicles in Indonesia has led to a rise in traffic accidents. A significant portion of these incidents is caused by driver fatigue and drowsiness. This project aims to address this issue by providing a proactive monitoring system that detects drowsiness and encourages drivers to take preventive action.
 
-Hal ini menunjukkan perlunya sistem deteksi kantuk yang dapat memberikan peringatan dini kepada pengemudi guna mencegah kecelakaan fatal di jalan raya.
+## Development Team
+| Name                     | Student ID          |
+|--------------------------|---------------------|
+| Faundra Pratama Sukma    | 22/505520/TK/55323  |
+| Adinda Putri Romadhon    | 22/505508/TK/55321  |
+| Aisa Selvira Q.A         | 22/498561/TK/54690  |
 
+## Features
+- Secure user authentication (Clerk + Next.js)
+- Real-time drowsiness detection using AI
+- Dashboard for visualizing alert history
+- Map integration to locate nearby rest areas
+- Web-based deployment for accessibility and demo
 
-## 👨‍💻 Tim Pengembang
+## System Architecture
+The system consists of three main components:
+1. **Frontend**: Built with Next.js and TypeScript
+2. **Backend**: API services using Express.js
+3. **AI Module**: Facial analysis for detecting drowsiness
 
-| Nama Lengkap               | NIM                      |
-|----------------------------|---------------------------|
-| Faundra Pratama Sukma      | 22/505520/TK/55323        |
-| Adinda Putri Romadhon      | 22/505508/TK/55321        |
-| Aisa Selvira Q.A           | 22/498561/TK/54690        |
+## Technology Stack
+| Technology        | Description                              |
+|------------------|------------------------------------------|
+| Next.js + TS     | Frontend framework and UI                |
+| Clerk            | Authentication and user management       |
+| Express.js       | Backend API handling                     |
+| Prisma           | Database ORM                             |
+| PostgreSQL       | Database system                          |
+| AI Model         | Drowsiness detection via facial analysis |
+| GitHub Pages     | Documentation hosting                    |
 
+## Deployment
+Access the application:
+https://nolep-two.vercel.app
 
-## 🚀 Tentang Aplikasi
+## Demo Video
+https://youtu.be/isCOEafarSE
 
-**Drowsy Detection App — Nolep** adalah prototipe sistem deteksi kantuk berbasis AI yang dirancang untuk digunakan oleh pengendara secara pribadi. Aplikasi ini mengidentifikasi tanda-tanda kantuk melalui kamera dan AI, serta memberikan **peringatan secara real-time** agar pengemudi dapat segera beristirahat.
-
-
-## 🧩 Fitur Unggulan
-
-- 🔐 **Autentikasi Aman** — menggunakan Clerk dengan integrasi Next.js
-- 📊 **Dashboard Visualisasi**:
-  - Bar chart: riwayat peringatan kantuk harian
-- 🗺️ **Halaman Peta** — menampilkan lokasi tempat istirahat terdekat
-- 🧠 **Prediksi AI** — mendeteksi kantuk melalui analisis wajah pengguna
-- 🌍 **Deploy via GitHub Pages** — untuk keperluan dokumentasi dan demo
-
-
-## ⚙️ Teknologi yang Digunakan
-
-| Teknologi        | Kegunaan                                      |
-|------------------|-----------------------------------------------|
-| **Next.js + TS** | Frontend dan UI berbasis React + TypeScript   |
-| **Clerk**        | Sistem autentikasi dan manajemen pengguna     |
-| **Express.js**   | Backend API dan pengelolaan routing           |
-| **AI Model**     | Deteksi kantuk berbasis analisis wajah        |
-| **GitHub Pages** | Hosting dokumentasi proyek secara statis      |
-
-
-
-## 🚀 Deployment
-
-Aplikasi dapat diakses di:  
-🌐 [https://nolep-two.vercel.app](https://nolep-two.vercel.app)
-
-
-## 🎥 Video Demo
-Video demo yang dapat dilihat pada youtube:  
-🌐 [Video Demo](https://youtu.be/isCOEafarSE?si=4Qd68nsApUhFrmNC)
-
-## 🔐 Kredensial Login Demo
-
-Untuk mengakses demo dengan fitur autentikasi, silakan gunakan akun berikut:
-
-| **Email**           | **Password**   |
-|---------------------|----------------|
-| noleptest@gmail.com | senprotest     |
-
-
-
-## 📊 Link Presentasi
-
-Akses presentasi proyek kami melalui Canva:  
-🌐 [PPT Canva](https://www.canva.com/design/DAGnhuTFqJY/iytbVh2bVFTKggLgBnNZZg/edit)  
-
+## Demo Credentials
+| Email               | Password    |
+|---------------------|-------------|
+| noleptest@gmail.com | senprotest  |
 
 ## 🛠️ Installation
 
