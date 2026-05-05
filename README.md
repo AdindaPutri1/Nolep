@@ -77,7 +77,7 @@ https://youtu.be/isCOEafarSE
    npm run dev
 
 
-## 📁 Struktur Proyek
+## Struktur Proyek
 - `.github/` — Workflow GitHub Actions  
 - `ai-models/` — Model AI untuk deteksi kantuk  
 - `docs/` — Dokumentasi proyek  
@@ -104,7 +104,7 @@ https://youtu.be/isCOEafarSE
 
 
 
-## 🏫 Institusi
+## Institusi
 
 Departemen Teknik Elektro dan Teknologi Informasi
 Fakultas Teknik, Universitas Gadjah Mada  
