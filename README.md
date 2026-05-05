@@ -49,7 +49,7 @@ https://youtu.be/isCOEafarSE
 |---------------------|-------------|
 | noleptest@gmail.com | senprotest  |
 
-## 🛠️ Installation
+## Installation
 
 ### Prerequisites
 - Node.js (v18 or later)
